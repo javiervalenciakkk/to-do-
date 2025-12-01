@@ -1,0 +1,108 @@
+# 📋 TODO-TOOLS - INSTRUCCIONES FINALES PARA GITHUB
+
+## 📦 ARCHIVOS LISTOS PARA COPIAR Y PEGAR
+
+Tienes **6 archivos** numerados, cópialos en este **orden exacto** en GitHub:
+
+```
+PROYECTO FINAL:
+├── 1-app.py → COPIAR CONTENIDO → CREAR EN GITHUB COMO: app.py
+├── 2-requirements.txt → COPIAR CONTENIDO → CREAR EN GITHUB COMO: requirements.txt
+├── 3-Procfile → COPIAR CONTENIDO → CREAR EN GITHUB COMO: Procfile
+├── 4-runtime.txt → COPIAR CONTENIDO → CREAR EN GITHUB COMO: runtime.txt
+├── 5-gitignore → COPIAR CONTENIDO → CREAR EN GITHUB COMO: .gitignore
+└── 6-index.html → COPIAR CONTENIDO → CREAR EN GITHUB EN: templates/index.html
+```
+
+---
+
+## 🎯 PASO A PASO EN GITHUB
+
+### 1. CREAR NUEVO REPOSITORIO
+- Ve a github.com
+- Haz clic en **+** (esquina superior derecha)
+- Selecciona **New repository**
+- Nombre: `todo-tools`
+- Tipo: **Public**
+- Haz clic en **Create repository**
+
+### 2. SUBIR ARCHIVO 1: app.py
+1. En tu repo, haz clic en **Add file → Create new file**
+2. Nombre del archivo: **app.py** (EXACTAMENTE así)
+3. Copia TODO el contenido de `1-app.py` y pégalo aquí
+4. Haz clic en **Commit changes**
+
+### 3. SUBIR ARCHIVO 2: requirements.txt
+1. Haz clic en **Add file → Create new file**
+2. Nombre: **requirements.txt**
+3. Copia TODO el contenido de `2-requirements.txt`
+4. Commit
+
+### 4. SUBIR ARCHIVO 3: Procfile
+1. **Add file → Create new file**
+2. Nombre: **Procfile** (SIN .txt)
+3. Copia TODO de `3-Procfile`
+4. Commit
+
+### 5. SUBIR ARCHIVO 4: runtime.txt
+1. **Add file → Create new file**
+2. Nombre: **runtime.txt**
+3. Copia TODO de `4-runtime.txt`
+4. Commit
+
+### 6. SUBIR ARCHIVO 5: .gitignore
+1. **Add file → Create new file**
+2. Nombre: **.gitignore** (comienza con punto)
+3. Copia TODO de `5-gitignore`
+4. Commit
+
+### 7. SUBIR ARCHIVO 6: templates/index.html
+1. **Add file → Create new file**
+2. Nombre: **templates/index.html** (CON la carpeta, important)
+3. Copia TODO el contenido de `6-index.html`
+4. Commit
+
+---
+
+## ✅ VERIFICAR EN GITHUB
+
+Después de subir los 6 archivos, tu repositorio debe verse así:
+
+```
+todo-tools/
+├── app.py
+├── requirements.txt
+├── Procfile
+├── runtime.txt
+├── .gitignore
+└── templates/
+    └── index.html
+```
+
+---
+
+## 🚀 DESPLEGAR EN RAILWAY
+
+1. Ve a **railway.app**
+2. Crea cuenta (o inicia sesión)
+3. Haz clic en **+ New Project**
+4. Selecciona **Deploy from GitHub repo**
+5. Selecciona **todo-tools**
+6. Haz clic en **Deploy**
+7. Espera 5-10 minutos
+
+Railway te dará una URL como:
+```
+https://todo-tools-prod-xyz.railway.app
+```
+
+---
+
+## 📱 ¡LISTO! 
+
+Accede desde:
+- PC: `https://tu-url.railway.app`
+- Móvil: Abre en navegador
+- Tablet: Mismo link
+
+¡Tu app está en la nube! 🎉

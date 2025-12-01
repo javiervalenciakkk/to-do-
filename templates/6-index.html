@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do Tools - Gestor de Tareas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-urgente: #ff6b6b;
+            --color-importante: #ffa94d;
+            --color-basico: #4ecdc4;
+            --color-bg: #f7f9fc;
+            --color-card: #ffffff;
+            --color-text: #2d3436;
+            --color-text-light: #636e72;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .contenedor {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--color-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow-hover);
+            overflow: hidden;
+        }
+
+        .encabezado {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .encabezado h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .encabezado p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: var(--color-bg);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-basico);
+        }
+
+        .stat.urgentes { border-left-color: var(--color-urgente); }
+        .stat.importantes { border-left-color: var(--color-importante); }
+        .stat.basicas { border-left-color: var(--color-basico); }
+
+        .stat-numero {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-text);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-light);
+            margin-top: 5px;
+        }
+
+        .formulario {
+            padding: 20px;
+            background: var(--color-bg);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .grupo-entrada {
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-principal {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .input-principal:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .select-prioridad {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .select-prioridad:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .boton-agregar {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .boton-agregar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .lista-tareas {
+            list-style: none;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .item-tarea {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--color-bg);
+            border-left: 5px solid var(--color-basico);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .item-tarea.urgente { border-left-color: var(--color-urgente); }
+        .item-tarea.importante { border-left-color: var(--color-importante); }
+        .item-tarea.basico { border-left-color: var(--color-basico); }
+
+        .item-tarea:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .item-tarea.completada {
+            opacity: 0.6;
+            background: #e8f5e9;
+        }
+
+        .item-tarea.completada .titulo-tarea {
+            text-decoration: line-through;
+            color: var(--color-text-light);
+        }
+
+        .checkbox-tarea {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .contenido-tarea {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .titulo-tarea {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+
+        .prioridad-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .prioridad-badge.urgente {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--color-urgente);
+        }
+
+        .prioridad-badge.importante {
+            background: rgba(255, 164, 77, 0.2);
+            color: var(--color-importante);
+        }
+
+        .prioridad-badge.basico {
+            background: rgba(78, 205, 196, 0.2);
+            color: var(--color-basico);
+        }
+
+        .botones-tarea {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .btn-eliminar {
+            padding: 6px 10px;
+            background: #ffebee;
+            color: var(--color-urgente);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-eliminar:hover {
+            background: #ffcdd2;
+        }
+
+        .estado-vacio {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--color-text-light);
+        }
+
+        @media (max-width: 600px) {
+            .contenedor { border-radius: 0; }
+            .encabezado { padding: 20px; }
+            .encabezado h1 { font-size: 24px; }
+            .estadisticas { grid-template-columns: 1fr; gap: 10px; }
+            .grupo-entrada { grid-template-columns: 1fr; }
+            .select-prioridad { width: 100%; }
+            .item-tarea { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <div class="encabezado">
+            <h1>📋 To-Do Tools</h1>
+            <p>Tu gestor de tareas privado y accesible desde cualquier dispositivo</p>
+        </div>
+
+        <div class="estadisticas">
+            <div class="stat urgentes">
+                <div class="stat-numero" id="stat-urgentes">0</div>
+                <div class="stat-label">🔴 Urgentes</div>
+            </div>
+            <div class="stat importantes">
+                <div class="stat-numero" id="stat-importantes">0</div>
+                <div class="stat-label">🟠 Importantes</div>
+            </div>
+            <div class="stat basicas">
+                <div class="stat-numero" id="stat-basicas">0</div>
+                <div class="stat-label">🔵 Básicas</div>
+            </div>
+        </div>
+
+        <div class="formulario">
+            <div class="grupo-entrada">
+                <input type="text" id="input-tarea" class="input-principal" placeholder="¿Qué necesitas hacer?">
+                <select id="select-prioridad" class="select-prioridad">
+                    <option value="basico">Básico</option>
+                    <option value="importante">Importante</option>
+                    <option value="urgente">Urgente</option>
+                </select>
+            </div>
+            <button class="boton-agregar" onclick="agregarTarea()">+ Agregar Tarea</button>
+        </div>
+
+        <ul class="lista-tareas" id="lista-tareas">
+            <div class="estado-vacio">
+                <div style="font-size: 48px; margin-bottom: 15px;">✨</div>
+                <strong>¡Todo completado!</strong><br>Agrega una nueva tarea para comenzar.
+            </div>
+        </ul>
+    </div>
+
+    <script>
+        const API_BASE = `${window.location.origin}/api/tareas`;
+
+        async function cargarTareas() {
+            try {
+                const respuesta = await fetch(API_BASE);
+                if (!respuesta.ok) throw new Error('Error');
+                const tareas = await respuesta.json();
+                mostrarTareas(tareas);
+                actualizarEstadisticas(tareas);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function agregarTarea() {
+            const input = document.getElementById('input-tarea');
+            const selectPrioridad = document.getElementById('select-prioridad');
+            const titulo = input.value.trim();
+
+            if (!titulo) {
+                alert('Escribe una tarea antes de agregar');
+                return;
+            }
+
+            try {
+                const respuesta = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        titulo: titulo,
+                        prioridad: selectPrioridad.value,
+                        descripcion: ''
+                    })
+                });
+
+                if (!respuesta.ok) throw new Error('Error');
+                input.value = '';
+                selectPrioridad.value = 'basico';
+                cargarTareas();
+            } catch (error) {
+                alert('No se pudo agregar la tarea');
+            }
+        }
+
+        async function toggleTarea(id, completadaActual) {
+            try {
+                await fetch(`${API_BASE}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ completada: !completadaActual })
+                });
+                cargarTareas();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function eliminarTarea(id) {
+            if (!confirm('¿Eliminar esta tarea?')) return;
+            try {
+                await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                cargarTareas();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function mostrarTareas(tareas) {
+            const lista = document.getElementById('lista-tareas');
+            if (tareas.length === 0) {
+                lista.innerHTML = '<div class="estado-vacio"><div style="font-size: 48px; margin-bottom: 15px;">✨</div><strong>¡Todo completado!</strong><br>Agrega una nueva tarea para comenzar.</div>';
+                return;
+            }
+
+            const tareasOrdenadas = tareas.sort((a, b) => {
+                const orden = { 'urgente': 0, 'importante': 1, 'basico': 2 };
+                return orden[a.prioridad] - orden[b.prioridad];
+            });
+
+            lista.innerHTML = tareasOrdenadas.map(tarea => `
+                <li class="item-tarea ${tarea.prioridad} ${tarea.completada ? 'completada' : ''}">
+                    <input type="checkbox" class="checkbox-tarea" ${tarea.completada ? 'checked' : ''} onchange="toggleTarea(${tarea.id}, ${tarea.completada})">
+                    <div class="contenido-tarea">
+                        <div class="titulo-tarea">${tarea.titulo}</div>
+                        <div class="prioridad-badge ${tarea.prioridad}">${tarea.prioridad}</div>
+                    </div>
+                    <div class="botones-tarea">
+                        <button class="btn-eliminar" onclick="eliminarTarea(${tarea.id})">🗑️ Eliminar</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function actualizarEstadisticas(tareas) {
+            document.getElementById('stat-urgentes').textContent = tareas.filter(t => t.prioridad === 'urgente').length;
+            document.getElementById('stat-importantes').textContent = tareas.filter(t => t.prioridad === 'importante').length;
+            document.getElementById('stat-basicas').textContent = tareas.filter(t => t.prioridad === 'basico').length;
+        }
+
+        document.getElementById('input-tarea').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') agregarTarea();
+        });
+
+        cargarTareas();
+        setInterval(cargarTareas, 5000);
+    </script>
+</body>
+</html>
